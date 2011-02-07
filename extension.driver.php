@@ -70,7 +70,7 @@
 		}
 
 		public function getAPIKey() {
-			return Symphony::Configuration()->get('apikey', 'createsend');
+			return Symphony::Configuration()->get('apikey', 'campaignmonitor');
 		}
 
 		public function appendDocumentation($context) {
@@ -83,10 +83,10 @@
 			');
 
 			$context['documentation'][] = contentBlueprintsEvents::processDocumentationCode('
-<input name="campaignmonitor[list]" value="0427e1a03e14880793a6c0a0d3e587b3" type="hidden" />
+<input name="campaignmonitor[list]" value="{$your-list-id}" type="hidden" />
 <input name="campaignmonitor[field][Name]" value="$field-first-name, $field-last-name" type="hidden" />
 <input name="campaignmonitor[field][Email]" value="$field-email-address" type="hidden" />
-<input name="campaignmonitor[field][Custom]" value="Value for field Custom..." type="hidden" />
+<input name="campaignmonitor[field][Custom]" value="Value for field Custom Field..." type="hidden" />
 			');
 		}
 
