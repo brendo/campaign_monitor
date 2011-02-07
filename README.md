@@ -20,13 +20,13 @@ lists via Symphony events.
 1. Go to your Campaign Monitor account and get your API Key (Account Settings). Add this to the preferences page.
 2. Create an event and attach the Campaign Monitor filter to the Event
 3. In your Campaign Monitor account, find the list that you want to add Subscribers to and find it's List ID (change name/type)
-4. Create your form in the XSLT and at minimum add the following three input fields
+4. Create your form in the XSLT and at minimum add three input fields, `campaignmonitor[list]`, `campaignmonitor[field][Name]`, `campaignmonitor[field][Email]`
+
+The `$field-name` syntax will get the value of the <input name='fields[name]' /> when posting to C+S.
 
 	<input name="campaignmonitor[list]" value="{$your-list-id}" type="hidden" />
 	<input name="campaignmonitor[field][Name]" value="$field-name" type="hidden" />
 	<input name="campaignmonitor[field][Email]" value="$field-email" type="hidden" />
-
-The `$field-name` syntax will get the value of the <input name='fields[name]' /> when posting to C+S.
 
 You can add custom fields exactly the same way:
 
