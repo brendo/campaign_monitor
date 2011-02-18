@@ -3,8 +3,8 @@
 The Campaign Monitor extension allows you to add subscribers to your Campaign Monitor
 lists via Symphony events.
 
-- Version: 0.9
-- Date: 7th February 2011
+- Version: 0.9.1
+- Date: 18th February 2011
 - Requirements: Symphony 2.0.6 or newer, <http://github.com/symphonycms/symphony-2/>
 - Author: Brendan Abbott [brendan@bloodbone.ws], Rowan Lewis [me@rowanlewis.com]
 - GitHub Repository: <http://github.com/brendo/campaign_monitor>
@@ -33,8 +33,17 @@ You can add custom fields exactly the same way:
 	<input name="campaignmonitor[field][Name]" value="$field-name" type="hidden" />
 	<input name="campaignmonitor[field][CustomFieldHandle]" value="$field-custom-field" type="hidden" />
 
+If you want to merge any existing Custom Field data from a Subscriber record, say a Select (Many) custom field, you do so with:
+
+	<input name="campaignmonitor[merge]" value="Name of Custom Field1, Name of CustomField2" type="hidden" />
+
 
 ## CHANGE LOG
+
+*0.9.1* (18th February 2011)
+
+- Added ability to merge existing subscriber records by field.
+- Minor code cleanup
 
 *0.9* (7th February 2011)
 
