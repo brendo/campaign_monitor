@@ -3,8 +3,8 @@
 The Campaign Monitor extension allows you to add subscribers to your Campaign Monitor
 lists via Symphony events.
 
-- Version: 0.9.1
-- Date: 18th February 2011
+- Version: 0.9.2pre
+- Date: unreleased
 - Requirements: Symphony 2.0.6 or newer, <http://github.com/symphonycms/symphony-2/>
 - Author: Brendan Abbott [brendan@bloodbone.ws], Rowan Lewis [me@rowanlewis.com]
 - GitHub Repository: <http://github.com/brendo/campaign_monitor>

@@ -1,0 +1,12 @@
+div.field-campaign_monitor dl dt {
+	font-weight: bold;
+	display: block;
+	float: left;
+	clear: left;
+	margin-right: 1em;
+}
+
+div.field-campaign_monitor dl dd {
+	display: inline-block;
+	float: left;
+}

@@ -6,7 +6,7 @@
 		public function about() {
 			return array(
 				'name'			=> 'Campaign Monitor',
-				'version'		=> '0.9.1',
+				'version'		=> '0.9.2pre',
 				'release-date'	=> '2011-02-18',
 				'author'		=> array(
 					array(
@@ -68,9 +68,54 @@
 		Installation:
 	-------------------------------------------------------------------------*/
 
+		public function install(){
+			try {
+				Symphony::Database()->query("
+					CREATE TABLE IF NOT EXISTS `tbl_fields_campaign_monitor` (
+						`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+						`field_id` INT(11) UNSIGNED NOT NULL,
+						`relation_id` INT(11) UNSIGNED NOT NULL,
+						`cm_list_id` VARCHAR(32) NOT NULL,
+						`cache_validity` VARCHAR(32) NOT NULL,
+					  	PRIMARY KEY  (`id`),
+					  	UNIQUE KEY `field_id` (`field_id`)
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+				");
+			}
+			catch (Exception $ex) {
+				$extension = $this->about();
+				Administration::instance()->Page->pageAlert(__('An error occurred while installing %s. %s', array($extension['name'], $ex->getMessage())), Alert::ERROR);
+				return false;
+			}
+
+			return true;
+		}
+
+		public function update($previousVersion){
+			if(version_compare($previousVersion, '0.9.2', '<')) {
+				return $this->install();
+			}
+
+			return true;
+		}
+
 		public function uninstall() {
-			Symphony::Configuration()->remove('campaignmonitor');
-			Administration::instance()->saveConfig();
+			if(parent::uninstall() == true){
+				try {
+					Symphony::Configuration()->remove('campaignmonitor');
+					Administration::instance()->saveConfig();
+					Symphony::Database()->query("DROP TABLE `tbl_fields_campaignmonitor`");
+
+					return true;
+				}
+				catch (Exception $ex) {
+					$extension = $this->about();
+					$this->pageAlert(__('An error occurred while uninstalling %s. %s', array($extension['name'], $ex->getMessage())), Alert::ERROR);
+					return false;
+				}
+			}
+
+			return false;
 		}
 
 	/*-------------------------------------------------------------------------
@@ -224,6 +269,16 @@
 			return Symphony::Configuration()->get('apikey', 'campaignmonitor');
 		}
 
+		public static function appendAssets() {
+			if(class_exists('Administration')
+				&& Administration::instance() instanceof Administration
+				&& Administration::instance()->Page instanceof HTMLPage
+			) {
+				Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/campaign_monitor/assets/campaign_monitor.publish.css', 'screen', 10000, false);
+				//Administration::instance()->Page->addScriptToHead(URL . '/extensions/campaign_monitor/assets/campaign_monitor.publish.js', 10001, false);
+			}
+		}
+
 		/**
 		 * Takes the `$_POST['fields']` and generates a flat array of
 		 * all the fields.
@@ -299,28 +354,12 @@
 			$merge_fields = explode(",", $merge_fields);
 			$merge_fields = array_map('trim', $merge_fields);
 
-			// Contact C+S and check to see if this subscriber already exists
-			// and if so, merge the values so that it won't be overidden.
-			$api = sprintf(
-				"http://api.createsend.com/api/v3/subscribers/%s.json?email=%s",
-				$_POST['campaignmonitor']['list'], urlencode($values['Email'])
-			);
-
-			$ch = curl_init($api);
-			curl_setopt_array($ch, array(
-				CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-				CURLOPT_USERPWD => $this->getAPIKey() . ":magic",
-				CURLOPT_HTTPHEADER => array("Content-type: application/json; charset=utf-8"),
-				CURLOPT_RETURNTRANSFER => true
-			));
-
-			$response = curl_exec($ch);
-			$info = curl_getinfo($ch);
+			$result = Extension_Campaign_Monitor::retreiveSubscriberByEmail($values['Email'], $_POST['campaignmonitor']['list']);
 
 			// If subscriber is new, there's no data to fetch!
-			if($info['http_code'] == 203) return $values;
+			if($result['info'] == 203) return $values;
 
-			$response = json_decode($response);
+			$response = json_decode($result['response']);
 
 			if(is_array($response->CustomFields)) {
 				foreach($response->CustomFields as $object) {
@@ -335,5 +374,41 @@
 			}
 
 			return $values;
+		}
+
+	/*-------------------------------------------------------------------------
+		API Connectivity [Break this into a /lib if this grows further]
+	-------------------------------------------------------------------------*/
+
+		/**
+		 * Given an email address, and a list, retrieve a subscriber's information
+		 *
+		 * @param string $email
+		 * @param string $list
+		 * @return array('response', 'info');
+		 */
+		public static function retreiveSubscriberByEmail($email, $list) {
+			// Contact C+S and check to see if this subscriber already exists
+			// and if so, merge the values so that it won't be overidden.
+			$api = sprintf(
+				"http://api.createsend.com/api/v3/subscribers/%s.json?email=%s",
+				$list, urlencode($email)
+			);
+
+			$ch = curl_init($api);
+			curl_setopt_array($ch, array(
+				CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+				CURLOPT_USERPWD => Extension_Campaign_Monitor::getAPIKey() . ":magic",
+				CURLOPT_HTTPHEADER => array("Content-type: application/json; charset=utf-8"),
+				CURLOPT_RETURNTRANSFER => true
+			));
+
+			$response = curl_exec($ch);
+			$info = curl_getinfo($ch);
+
+			return array(
+				'response' => $response,
+				'info' => $info
+			);
 		}
 	}
