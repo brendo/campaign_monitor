@@ -96,26 +96,37 @@
 			$result = json_decode($cache['data']);
 
 			$dl = new XMLElement('dl');
+			$keys = array();
 			foreach($result as $key => $value) {
-				if(!empty($value)) {
-					$dl->appendChild(new XMLElement('dt', $key));
-				}
-
 				if(is_array($value)) {
-					foreach($value as $v) {
-						$dl->appendChild(new XMLElement('dd', $v));
+					foreach($value as $obj) {
+						if(!in_array($obj->Key, $keys)) {
+							$keys[] = $obj->Key;
+							$dl->appendChild(new XMLElement('dt', $obj->Key));
+						}
+
+						$dl->appendChild(new XMLElement('dd', $obj->Value));
 					}
 				}
 				else {
+					$dl->appendChild(new XMLElement('dt', $this->formatCMKey($key)));
 					$dl->appendChild(new XMLElement('dd', $value));
 				}
 			}
 
+			$wrapper->appendChild($dl);
 			$wrapper->appendChild(
 				new XMLElement('span', __('Last Updated %s', array(DateTimeObj::get(__SYM_DATETIME_FORMAT__, strtotime($cache['last_cached'])))))
 			);
 
-			$wrapper->appendChild($dl);
+		}
+
+		public function formatCMKey($key) {
+			switch ($key) {
+				case "EmailAddress": return "Email Address";break;
+				case "Date": return "Subscription Date";break;
+				default: return $key;
+			}
 		}
 
 
@@ -222,6 +233,8 @@
 			$handle = $this->handle();
 
 			if($id === false) return false;
+
+			Symphony::Database()->delete("tbl_entries_data_{$id}", "1 = 1");
 
 			$fields = array(
 				'field_id' => $id,

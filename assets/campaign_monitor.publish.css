@@ -1,12 +1,26 @@
+div.field-campaign_monitor dl {
+	float: left;
+	margin-bottom: 1em;
+	width: 100%;
+}
+
 div.field-campaign_monitor dl dt {
 	font-weight: bold;
 	display: block;
 	float: left;
 	clear: left;
 	margin-right: 1em;
+	width: 10em;
 }
 
 div.field-campaign_monitor dl dd {
 	display: inline-block;
 	float: left;
+	margin-right: .5em;
+}
+
+div.field-campaign_monitor span {
+	clear: both;
+	font-size: .9em;
+	color: #AAA;
 }
