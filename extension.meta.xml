@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="campaign_monitor">
+	<name>Campaign Monitor</name>
+	<description>Add subscribers to your Campaign Monitor lists via Symphony events.</description>
+	<repo type="github">https://github.com/brendo/campaign_monitor</repo>
+	<url type="discuss">http://symphony-cms.com/discuss/thread/61002/</url>
+	<types>
+		<type>Events</type>
+	</types>
+	<authors>
+		<author>
+			<name github="brendo" symphony="brendo">Brendan Abbott</name>
+		</author>
+	</authors>
+	<releases>
+		<release version="0.9.1" date="2011-02-18" min="2.0.6" max="2.2.4" />
+	</releases>
+</extension>
