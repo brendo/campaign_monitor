@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension id="campaign_monitor">
+<extension id="campaign_monitor" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>Campaign Monitor</name>
 	<description>Add subscribers to your Campaign Monitor lists via Symphony events.</description>
 	<repo type="github">https://github.com/brendo/campaign_monitor</repo>
@@ -13,6 +13,6 @@
 		</author>
 	</authors>
 	<releases>
-		<release version="0.9.1" date="2011-02-18" min="2.0.6" max="2.2.4" />
+		<release version="0.9.1" date="2011-02-18" min="2.0.6" max="2.3.x" />
 	</releases>
 </extension>
