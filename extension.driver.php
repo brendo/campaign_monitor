@@ -211,7 +211,7 @@
 			}
 			else {
 				$context['messages'][] = array('campaignmonitor', false, $response->Message);
-				Symphony::$Log->pushToLog(
+				Symphony::Log()->pushToLog(
 					__('There was an error subscribing to ListID, %s. Campaign Monitor returned code %d, %s.', array(
 						$_POST['campaignmonitor']['list'], $response->Code, $response->Message
 					)),
