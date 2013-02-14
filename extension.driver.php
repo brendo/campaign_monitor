@@ -167,6 +167,9 @@
 				elseif ($name == 'Email') {
 					$request['EmailAddress'] = $value;
 				}
+				elseif ($name == 'Resubscribe') {
+					$request['Resubscribe'] = $value;
+				}
 				else {
 					if(is_array($value)) {
 						foreach($value as $nv) {
@@ -187,9 +190,15 @@
 
 			$request = json_encode($request);
 
-			$api = sprintf(
-				"http://api.createsend.com/api/v3/subscribers/%s.json", $_POST['campaignmonitor']['list']
-			);
+			if($_POST['campaignmonitor']['unsubscribe'] == 'yes') {
+				$api = sprintf(
+					"http://api.createsend.com/api/v3/subscribers/%s/unsubscribe.json", $_POST['campaignmonitor']['list']
+				);
+			} else {
+				$api = sprintf(
+					"http://api.createsend.com/api/v3/subscribers/%s.json", $_POST['campaignmonitor']['list']
+				);
+			}
 
 			$ch = curl_init($api);
 			curl_setopt_array($ch, array(
